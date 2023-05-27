@@ -39,7 +39,7 @@
 --    book_idx INT NOT NULL
 --);
 --
----- ================ feed 피드 랜덤으로 view에 띄워주기 "좋아요"
+---- ================ like 피드 랜덤으로 view에 띄워주기 "좋아요"
 --DROP TABLE IF EXISTS 좋아요;
 --create table 좋아요(
 --    idx INT NOT NULL AUTO_INCREMENT PRIMARY KEY,

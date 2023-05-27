@@ -28,8 +28,8 @@ dependencies {
 	//mysql
 	implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.28'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
-
+	//유효성검증 Vaild , Validated 사용
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
 }
 
 tasks.named('test') {

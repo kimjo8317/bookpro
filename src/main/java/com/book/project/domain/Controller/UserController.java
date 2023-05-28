@@ -1,49 +1,31 @@
 package com.book.project.domain.Controller;
 
-import com.book.project.domain.DTO.User;
-import com.book.project.domain.Repository.UserRepository;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Optional;
+import com.book.project.domain.DTO.LoginRequest;
+import com.book.project.domain.Service.UserService;
+import org.apache.catalina.User;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api")
 public class UserController {
-    private final UserRepository UserRepository;
+    private final UserService userService;
 
-    public UserController(UserRepository memberRepository) {
-        this.UserRepository = memberRepository;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
-    @PostMapping("/add")
-    public User createUser(@RequestBody User member) {
-        return UserRepository.save(member);
-    }
-
-    @GetMapping("/{id}")
-    public User getuserById(@PathVariable Long id) {
-        return UserRepository.findById(id);
-    }
-
-    @GetMapping("/login/{loginId}")
-    public Optional<User> getuserByLoginId(@PathVariable String loginId) {
-        return UserRepository.findByLoginId(loginId);
-    }
-
-    @GetMapping("/findall")
-    public List<User> getAllusers() {
-        return UserRepository.findAll();
-    }
-
-    @DeleteMapping("/{id}")
-    public void deleteuser(@PathVariable Long id) {
-        // Additional logic if needed before deleting
-        UserRepository.deleteById(id);
-    }
-
-    @DeleteMapping("/delete")
-    public void deleteAllusers() {
-        UserRepository.clearStore();
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
+        User user = userService.login(loginRequest.getId(), loginRequest.getPassword());
+        if (user != null) {
+            return ResponseEntity.ok("Login successful");
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+        }
     }
 }

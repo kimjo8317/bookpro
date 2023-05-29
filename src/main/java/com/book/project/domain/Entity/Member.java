@@ -23,10 +23,12 @@ public class Member {
     @JoinColumn(name = "confirm")
     private Subscribe sub;
 
-    // 트리거 코드 추가
-    @Transient
-    @Column(insertable = false, updatable = false)
-    private Boolean subConfirm;
-
     // 생성자, getter, setter, 기타 메서드
+
+    @PostUpdate
+    private void onPostUpdate() {
+        if (sub != null && sub.getIdx() == 1) {
+            sub.setConfirm(false);
+        }
+    }
 }

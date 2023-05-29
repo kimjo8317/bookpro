@@ -25,10 +25,12 @@ public class Subscribe {
     private LocalDateTime endDate;
     private LocalDateTime startDate;
 
-    // 트리거 코드 추가
-    @Transient
-    @Column(insertable = false, updatable = false)
-    private Boolean userConfirm;
-
     // 생성자, getter, setter, 기타 메서드
+
+    @PostUpdate
+    private void onPostUpdate() {
+        if (idx == 1) {
+            confirm = false;
+        }
+    }
 }

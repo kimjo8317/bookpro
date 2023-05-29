@@ -1,7 +1,7 @@
 package com.book.project.domain.Service;
 
+import com.book.project.domain.Entity.Member;
 import com.book.project.domain.Repository.UserRepository;
-import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -12,18 +12,18 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public User login(int id, String password) {
-        User user = userRepository.findById(id);
-        if (user != null && user.getPassword().equals(password)) {
-            return user;
+    public Member login(int id, String password) {
+        Member member = userRepository.findById(id);
+        if (member != null && member.getPw().equals(password)) {
+            return member;
         }
         return null;
     }
-        public User createUser(User user) {
+        public Member createUser(Member user) {
             return userRepository.save(user);
         }
 
-        public User getUserById(int id) {
+        public Member getUserById(int id) {
             return userRepository.findById(id);
         }
 

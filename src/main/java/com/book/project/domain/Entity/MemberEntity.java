@@ -1,5 +1,6 @@
 package com.book.project.domain.Entity;
 
+import com.book.project.domain.DTO.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -11,7 +12,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "member")
-public class Member {
+public class MemberEntity extends Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,7 +34,5 @@ public class Member {
     @Column(name="confirm")
     private Integer confirm;
 
-    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL)
-    private Subscribe subscribe;
 
 }

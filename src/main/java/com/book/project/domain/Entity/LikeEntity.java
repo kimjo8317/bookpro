@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "like")
-public class Like {
+public class LikeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="idx",nullable = false)
@@ -18,11 +18,11 @@ public class Like {
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "feed_idx")
-    private Feed feed;
+    private FeedEntity feedEntity;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_idx")
-    private Member member;
+    private MemberEntity member;
 
     // Constructors, getters, and setters
 }

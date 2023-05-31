@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "bookmark")
-public class Bookmark {
+public class BookmarkEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="idx",nullable = false)
@@ -20,6 +20,6 @@ public class Bookmark {
 
     @ManyToOne
     @JoinColumn(name = "member_id") // Replace "member_id" with the actual foreign key column name
-    private Member member;
+    private MemberEntity member;
 
 }

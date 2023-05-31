@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Setter
 @Entity
 @Table(name = "subscribe")
-public class Subscribe {
+public class SubscribeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY )
     @Column(name="idx",nullable = false)
@@ -31,13 +31,13 @@ public class Subscribe {
 
     @OneToOne
     @JoinColumn(name = "member_idx")
-    private Member member;
+    private MemberEntity member;
 
-    //Subscribe table, idx의 confirm 값을 변경할시 member idx, confirm도 같이수정
-//    public void setConfirm(Boolean confirm) {
-//        this.confirm = confirm;
-//        if (member != null) {
-//            member.setConfirm(confirm);
-//        }
-//    }
+//    Subscribe table, idx의 confirm 값을 변경할시 member idx, confirm도 같이수정
+    public void setConfirm(Boolean confirm) {
+        this.confirm = confirm;
+        if (member != null) {
+            member.setConfirm(confirm ? 1 : 0);
+        }
+    }
 }

@@ -31,9 +31,11 @@ dependencies {
 	//유효성검증 Vaild , Validated 사용
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
 	//spring security
-	implementation 'org.springframework.boot:spring-boot-starter-security'
+    //implementation 'org.springframework.boot:spring-boot-starter-security'
 	//devtools
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	//BCrypt
+	implementation 'org.mindrot:jbcrypt:0.4'
 
 
 }

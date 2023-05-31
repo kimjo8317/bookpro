@@ -1,14 +1,12 @@
 package com.book.project.domain.Entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Setter
 @Entity
@@ -16,11 +14,8 @@ import java.time.LocalDateTime;
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "idx",nullable = false)
     private Long idx;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "bookinfo_idx")
-    private BookInfo bookInfo;
 
     @Column(name = "content")
     private String content;
@@ -29,12 +24,13 @@ public class Review {
     private LocalDateTime createDate;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "feed_idx")
-    private Feed feed;
+    @JoinColumn(name = "bookinfo_idx")
+    private List<BookInfo> bookInfo;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "writer_idx")
-    private Member Member;
 
-    // Constructors, getters, setters, and other methods
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_idx")
+    private Member member;
+
+    // Getter and Setter methods
 }

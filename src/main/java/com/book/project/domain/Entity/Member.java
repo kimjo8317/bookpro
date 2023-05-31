@@ -10,25 +10,30 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
+@Table(name = "member")
 public class Member {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="idx",nullable = false)
     private Long idx;
+
+    @Column(name="id")
     private Integer id;
-    private String name;
-    private String pw;
+
+    @Column(name="likeIdx")
     private Integer likeIdx;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "confirm")
-    private Subscribe sub;
+    @Column(name="name")
+    private String name;
 
-    // 생성자, getter, setter, 기타 메서드
+    @Column(name="pw")
+    private String pw;
 
-    @PostUpdate
-    private void onPostUpdate() {
-        if (sub != null && sub.getIdx() == 1) {
-            sub.setConfirm(false);
-        }
-    }
+    @Column(name="confirm")
+    private Integer confirm;
+
+    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL)
+    private Subscribe subscribe;
+
 }

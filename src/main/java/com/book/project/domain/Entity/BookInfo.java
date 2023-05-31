@@ -15,18 +15,19 @@ import java.time.LocalDate;
 public class BookInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="idx",nullable = false)
     private int idx;
 
-    @Column(nullable = false)
+    @Column(name="title",nullable = false)
     private String title;
 
-    @Column(nullable = false)
+    @Column(name="writer",nullable = false)
     private String writer;
 
-    @Column(nullable = false)
+    @Column(name="genre",nullable = false)
     private String genre;
 
-    @Column(nullable = false)
+    @Column(name="publisher" , nullable = false)
     private String publisher;
 
     @Column(name = "publication_date", nullable = false)
@@ -38,5 +39,4 @@ public class BookInfo {
     @Column(nullable = false, columnDefinition = "LONGTEXT")
     private String summary;
 
-    // 생성자, 기타 메서드
 }

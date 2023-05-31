@@ -9,20 +9,20 @@ import lombok.Setter;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Setter
-@Entity
-@Table(name = "`like`")
+@Table(name = "like")
 public class Like {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="idx",nullable = false)
     private Long idx;
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "feed_idx")
     private Feed feed;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_idx")
     private Member member;
 
-    // Constructors, getters, setters, and other methods
+    // Constructors, getters, and setters
 }

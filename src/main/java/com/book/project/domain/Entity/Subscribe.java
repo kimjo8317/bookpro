@@ -15,22 +15,29 @@ import java.time.LocalDateTime;
 @Table(name = "subscribe")
 public class Subscribe {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY )
+    @Column(name="idx",nullable = false)
     private Long idx;
 
-    @OneToOne(mappedBy = "sub")
-    private Member member;
-
+    @Column(name = "confirm")
     private Boolean confirm;
+
+    @Column(name="endDate")
     private LocalDateTime endDate;
+
+    @Column(name="startDate")
     private LocalDateTime startDate;
 
-    // 생성자, getter, setter, 기타 메서드
 
-    @PostUpdate
-    private void onPostUpdate() {
-        if (idx == 1) {
-            confirm = false;
-        }
-    }
+    @OneToOne
+    @JoinColumn(name = "member_idx")
+    private Member member;
+
+    //Subscribe table, idx의 confirm 값을 변경할시 member idx, confirm도 같이수정
+//    public void setConfirm(Boolean confirm) {
+//        this.confirm = confirm;
+//        if (member != null) {
+//            member.setConfirm(confirm);
+//        }
+//    }
 }

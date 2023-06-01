@@ -11,6 +11,6 @@ import org.springframework.stereotype.Repository;
 public interface UserRepository extends JpaRepository<MemberEntity, Integer> {
 
     Member save(Member member);
-    MemberEntity findById(int id);
-    boolean existsById(int id);
+    MemberEntity findById(String id);
+    boolean existsById(String id);
 }

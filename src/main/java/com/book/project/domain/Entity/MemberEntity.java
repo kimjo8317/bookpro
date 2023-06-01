@@ -20,7 +20,7 @@ public class MemberEntity extends Member {
     private Long idx;
 
     @Column(name="id")
-    private Integer id;
+    private String id;
 
     @Column(name="likeIdx")
     private Integer likeIdx;

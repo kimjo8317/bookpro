@@ -1,10 +1,9 @@
 package com.book.project.domain.Service;
-import com.book.project.domain.DTO.Member;
-import org.mindrot.jbcrypt.BCrypt;
-import com.book.project.domain.Entity.MemberEntity;
-import org.springframework.stereotype.Service;
-import com.book.project.domain.Repository.UserRepository;
 
+import com.book.project.domain.DTO.Member;
+import com.book.project.domain.Repository.UserRepository;
+import org.springframework.stereotype.Service;
+import org.mindrot.jbcrypt.BCrypt;
 
 @Service
 public class UserService {
@@ -13,52 +12,66 @@ public class UserService {
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-    //로그인
-    public Member login(int id, String password) {
-        Member member = userRepository.findById(id);
-        if (member != null && member.getPw().equals(password)) {
-            return member;
-        }
-        return null;
+
+    public Member getUserById(String id) {
+        return userRepository.findById(id);
     }
 
+    public boolean authenticateUser(String id, String pw) {
+        // 사용자의 아이디와 비밀번호를 확인하여 인증 여부를 판단하는 로직을 구현합니다.
+        // 예를 들어, 데이터베이스에서 사용자 정보를 조회하여 비밀번호를 확인할 수 있습니다.
 
+        // 사용자 정보 조회
+        Member user = this.getUserById(id);
 
+        // 사용자가 존재하고, 비밀번호가 일치하는지 확인
+        if (user != null && checkPassword(pw, user.getPw())) {
+            return true; // 인증 성공
+        }
 
-    //회원가입
-    public MemberEntity createUser(MemberEntity user) {
+        return false; // 인증 실패
+    }
+
+    private boolean checkPassword(String plainPassword, String hashedPassword) {
+        // 비밀번호 해싱 알고리즘을 사용하여 입력된 비밀번호와 저장된 해시된 비밀번호를 비교합니다.
+        // 예를 들어, BCrypt 해시 알고리즘을 사용할 수 있습니다.
+        return BCrypt.checkpw(plainPassword, hashedPassword);
+    }
+
+    public Member createUser(Member member) {
         // 입력값의 유효성 검사
-        if (!isValidUser(user)) {
-            throw new IllegalArgumentException("유효하지 않은 회원 정보입니다.");
+        if (!isValidUser(member)) {
+            throw new IllegalArgumentException("Invalid member information.");
         }
 
         // 동일한 ID의 회원이 이미 존재하는지 확인
-        if (userRepository.existsById(user.getId())) {
-            throw new IllegalArgumentException("이미 존재하는 회원입니다.");
+        if (userRepository.existsById(member.getId())) {
+            throw new IllegalArgumentException("This member already exists.");
         }
 
         // 비밀번호를 해싱하여 저장
-        String hashedPassword = hashPassword(user.getPw());
-        user.setPw(hashedPassword);
+        String hashedPw = hashPw(member.getPw());
+        member.setPw(hashedPw);
 
         // 회원 저장
-        return userRepository.save(user);
+        return userRepository.save(member);
     }
-    public boolean isValidUser(MemberEntity user) {
+
+    public boolean isValidUser(Member user) {
         // 유효성 검사 로직을 구현합니다.
         // 예를 들어, 비밀번호의 길이를 확인할 수 있습니다.
-        return isValidPassword(user.getPw());
+        return isValidPw(user.getPw());
     }
 
-    public boolean isValidPassword(String password) {
-        // 비밀번호 유효성 검사 로직을 구현합니다.
-        // 예를 들어, 비밀번호의 최소 길이, 특수문자 포함 여부 등을 확인할 수 있습니다.
-        return password.length() >= 8;
+    public boolean isValidPw(String pw) {
+        // 비밀번호의 최소 길이와 특수 문자 포함 여부를 확인합니다.
+        return pw.length() >= 8 && pw.matches(".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?].*");
     }
 
-    public String hashPassword(String password) {
+    public String hashPw(String pw) {
         // 비밀번호를 해싱하여 반환하는 로직을 구현합니다.
         // 예를 들어, BCrypt 알고리즘 등을 사용하여 비밀번호를 해싱할 수 있습니다.
-        return BCrypt.hashpw(password, BCrypt.gensalt());
+        return BCrypt.hashpw(pw, BCrypt.gensalt());
     }
+
 }

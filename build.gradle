@@ -19,21 +19,22 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation "org.springframework.boot:spring-boot-starter-data-jpa"
-	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-	compileOnly 'org.projectlombok:lombok'
+	implementation 'org.springframework.boot:spring-boot-starter-web:3.1.0'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.0.4'
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc:3.0.4'
+    implementation 'org.jetbrains:annotations:24.0.0'
+    compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test:3.1.0'
 	//mysql
 	implementation 'mysql:mysql-connector-java:8.0.26' // MySQL 커넥터 의존성 추가
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	//유효성검증 Vaild , Validated 사용
-	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '3.0.4'
 	//spring security
-    implementation 'org.springframework.boot:spring-boot-starter-security'
+//    implementation 'org.springframework.boot:spring-boot-starter-security'
 	//devtools
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools:3.0.4'
 	//BCrypt
 	implementation 'org.mindrot:jbcrypt:0.4'
 	// io.jsonwebtoken 라이브러리 추가
@@ -47,3 +48,7 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+tasks.compileJava {
+	options.compilerArgs += '-Xlint:deprecation'
+}
+

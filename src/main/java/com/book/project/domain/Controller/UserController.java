@@ -1,17 +1,15 @@
 package com.book.project.domain.Controller;
 
-import com.book.project.domain.DTO.Member;
+import com.book.project.domain.DTO.LoginRequest;
 import com.book.project.domain.Entity.MemberEntity;
 import com.book.project.domain.Service.UserService;
+import io.jsonwebtoken.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.Jws;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Date;
 
@@ -27,8 +25,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-//    @CrossOrigin(origins = "http://localhost:3000")
-    public ResponseEntity<String> login(@RequestBody Member loginRequest) {
+    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
         try {
             boolean isAuthenticated = userService.authenticateUser(loginRequest.getId(), loginRequest.getPw());
             if (isAuthenticated) {
@@ -39,8 +36,15 @@ public class UserController {
                 debugJwtToken(token);
                 debugEncodeJwtToken(token);
 
-                return ResponseEntity.ok().header("Authorization", "Bearer " + token).body("Login successful");
+                ObjectMapper objectMapper = new ObjectMapper();
+                String responseJson = objectMapper.createObjectNode()
+                        .put("token", token)
+                        .put("message", "Login successful")
+                        .toString();
 
+                return ResponseEntity.ok()
+                        .header("Content-Type", "application/json")
+                        .body(responseJson);
             } else {
                 // 인증 실패
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
@@ -69,9 +73,10 @@ public class UserController {
 
     private void debugJwtToken(String token) {
         try {
-            Jws<Claims> claimsJws = Jwts.parser()
-                    .setSigningKey(Keys.hmacShaKeyFor(keyBytes))
-                    .parseClaimsJws(token);
+            JwtParserBuilder parserBuilder = Jwts.parserBuilder();
+            parserBuilder.setSigningKey(keyBytes); // keyBytes는 적절한 값으로 설정해야 함
+
+            Jws<Claims> claimsJws = parserBuilder.build().parseClaimsJws(token);
 
             Claims claims = claimsJws.getBody();
             System.out.println("Decoded JWT claims:");
@@ -106,10 +111,9 @@ public class UserController {
 
 
     @PostMapping("/signup")
-    @CrossOrigin(origins = "http://localhost:3000")
-    public ResponseEntity<String> sign(@RequestBody MemberEntity memberEntity) {
+    public ResponseEntity<String> sign(@RequestBody MemberEntity member) {
         try {
-            MemberEntity createdMember = (MemberEntity) userService.createUser(memberEntity);
+            MemberEntity createdMember = userService.createUser(member);
             return ResponseEntity.ok("Sign up successful");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

@@ -1,6 +1,6 @@
 package com.book.project.domain.Service;
 
-import com.book.project.domain.DTO.Member;
+import com.book.project.domain.Entity.MemberEntity;
 import com.book.project.domain.Repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.mindrot.jbcrypt.BCrypt;
@@ -13,7 +13,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public Member getUserById(String id) {
+    public MemberEntity getUserById(String id) {
         return userRepository.findById(id);
     }
 
@@ -22,7 +22,7 @@ public class UserService {
         // 예를 들어, 데이터베이스에서 사용자 정보를 조회하여 비밀번호를 확인할 수 있습니다.
 
         // 사용자 정보 조회
-        Member user = this.getUserById(id);
+        MemberEntity user = this.getUserById(id);
 
         // 사용자가 존재하고, 비밀번호가 일치하는지 확인
         if (user != null && checkPassword(pw, user.getPw())) {
@@ -38,7 +38,7 @@ public class UserService {
         return BCrypt.checkpw(plainPassword, hashedPassword);
     }
 
-    public Member createUser(Member member) {
+    public MemberEntity createUser(MemberEntity member) {
         // 입력값의 유효성 검사
         if (!isValidUser(member)) {
             throw new IllegalArgumentException("Invalid member information.");
@@ -57,7 +57,7 @@ public class UserService {
         return userRepository.save(member);
     }
 
-    public boolean isValidUser(Member user) {
+    public boolean isValidUser(MemberEntity user) {
         // 유효성 검사 로직을 구현합니다.
         // 예를 들어, 비밀번호의 길이를 확인할 수 있습니다.
         return isValidPw(user.getPw());

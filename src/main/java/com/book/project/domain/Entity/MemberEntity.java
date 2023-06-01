@@ -1,6 +1,5 @@
 package com.book.project.domain.Entity;
 
-import com.book.project.domain.DTO.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -12,7 +11,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "member")
-public class MemberEntity extends Member {
+public class MemberEntity  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,6 +32,4 @@ public class MemberEntity extends Member {
 
     @Column(name="confirm")
     private Integer confirm;
-
-
 }

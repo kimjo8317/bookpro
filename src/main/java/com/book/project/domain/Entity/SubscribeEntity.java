@@ -33,11 +33,17 @@ public class SubscribeEntity {
     @JoinColumn(name = "member_idx")
     private MemberEntity member;
 
-//    Subscribe table, idx의 confirm 값을 변경할시 member idx, confirm도 같이수정
+
+    //Subscribe table, idx의 confirm 값을 변경할시 member idx, confirm도 같이수정
     public void setConfirm(Boolean confirm) {
         this.confirm = confirm;
         if (member != null) {
-            member.setConfirm(confirm ? 1 : 0);
+            try {
+                member.setConfirm(confirm ? 1 : 0);
+            } catch (Exception e) {
+                // 예외 처리 로직 작성
+                e.printStackTrace();
+            }
         }
     }
 }

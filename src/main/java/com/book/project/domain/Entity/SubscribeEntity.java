@@ -33,17 +33,57 @@ public class SubscribeEntity {
     @JoinColumn(name = "member_idx")
     private MemberEntity member;
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private Boolean confirm;
+        private LocalDateTime endDate;
+        private LocalDateTime startDate;
+        private MemberEntity memberEntity;
+
+        public Builder confirm(Boolean confirm) {
+            this.confirm = confirm;
+            return this;
+        }
+
+        public Builder endDate(LocalDateTime endDate) {
+            this.endDate = endDate;
+            return this;
+        }
+
+        public Builder startDate(LocalDateTime startDate) {
+            this.startDate = startDate;
+            return this;
+        }
+
+        public Builder member(MemberEntity memberEntity) {
+            this.memberEntity = memberEntity;
+            return this;
+        }
+
+        public SubscribeEntity build() {
+            SubscribeEntity subscribe = new SubscribeEntity();
+            subscribe.setConfirm(this.confirm);
+            subscribe.setEndDate(this.endDate);
+            subscribe.setStartDate(this.startDate);
+            subscribe.setMember(this.memberEntity);
+            return subscribe;
+        }
+    }
 
     //Subscribe table, idx의 confirm 값을 변경할시 member idx, confirm도 같이수정
     public void setConfirm(Boolean confirm) {
         this.confirm = confirm;
         if (member != null) {
             try {
-                member.setConfirm(confirm ? 1 : 0);
+                member.setConfirm(confirm);
             } catch (Exception e) {
                 // 예외 처리 로직 작성
                 e.printStackTrace();
             }
         }
     }
+
 }

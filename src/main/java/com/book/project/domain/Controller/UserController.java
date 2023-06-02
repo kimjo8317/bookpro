@@ -2,15 +2,23 @@ package com.book.project.domain.Controller;
 
 import com.book.project.domain.DTO.LoginRequest;
 import com.book.project.domain.Entity.MemberEntity;
+import com.book.project.domain.Entity.SubscribeEntity;
+import com.book.project.domain.Service.SubscribeService;
 import com.book.project.domain.Service.UserService;
-import io.jsonwebtoken.*;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.Jws;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @RestController
@@ -24,13 +32,22 @@ public class UserController {
         this.keyBytes = Keys.secretKeyFor(SignatureAlgorithm.HS256).getEncoded();
     }
 
+    @Autowired
+    private SubscribeService subscribeService;
+
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest, HttpSession session) {
         try {
             boolean isAuthenticated = userService.authenticateUser(loginRequest.getId(), loginRequest.getPw());
             if (isAuthenticated) {
                 // 인증 성공 - JWT 발급
                 String token = generateJwtToken(loginRequest.getId());
+
+                // 세션에 토큰 저장
+                session.setAttribute("token", token);
+
+                // 구독 여부 확인
+                boolean isSubscribed = checkSubscription(loginRequest.getId());
 
                 // JWT 디버깅
                 debugJwtToken(token);
@@ -40,6 +57,7 @@ public class UserController {
                 String responseJson = objectMapper.createObjectNode()
                         .put("token", token)
                         .put("message", "Login successful")
+                        .put("subscribe", isSubscribed)
                         .toString();
 
                 return ResponseEntity.ok()
@@ -54,6 +72,7 @@ public class UserController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
 
     private String generateJwtToken(String userId) {
         Claims claims = Jwts.claims().setSubject(userId);
@@ -70,13 +89,27 @@ public class UserController {
         return token;
     }
 
+    private boolean checkSubscription(String memberId) {
+        MemberEntity memberEntity = userService.getUserById(memberId);
+        if (memberEntity != null) {
+            SubscribeEntity subscription = subscribeService.getSubscriptionByMemberId(memberEntity.getIdx());
+            if (subscription != null) {
+                boolean isSubscribed = subscription.getConfirm();
+                if (!isSubscribed) {
+                    memberEntity.setConfirm(false); // member의 confirm 값을 0으로 설정
+                    userService.updateUser(memberEntity); // member 업데이트
+                }
+                return isSubscribed;
+            }
+        }
+        return false; // 구독 정보가 없는 경우 false 반환
+    }
 
     private void debugJwtToken(String token) {
         try {
-            JwtParserBuilder parserBuilder = Jwts.parserBuilder();
-            parserBuilder.setSigningKey(keyBytes); // keyBytes는 적절한 값으로 설정해야 함
-
-            Jws<Claims> claimsJws = parserBuilder.build().parseClaimsJws(token);
+            Jws<Claims> claimsJws = Jwts.parser()
+                    .setSigningKey(Keys.hmacShaKeyFor(keyBytes))
+                    .parseClaimsJws(token);
 
             Claims claims = claimsJws.getBody();
             System.out.println("Decoded JWT claims:");
@@ -117,6 +150,69 @@ public class UserController {
             return ResponseEntity.ok("Sign up successful");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/subscribe")
+    public ResponseEntity<String> subscribe(@RequestHeader("Authorization") String token) {
+        // 1. 토큰 검증 및 회원 ID 추출
+        String memberId = verifyAndExtractMemberId(token);
+
+        if (memberId != null) {
+            // 2. 회원 ID를 이용하여 회원 정보 조회
+            MemberEntity member = userService.getUserById(memberId);
+            if (member != null) {
+                // 3. 구독 정보 업데이트 또는 다른 필요한 작업 수행
+                Long memberIdx = member.getIdx(); // 회원의 idx 가져오기
+
+                // 4. Subscribe 테이블에 구독 정보 저장 또는 업데이트
+                SubscribeEntity existingSubscription = subscribeService.getSubscriptionByMemberId(memberIdx);
+                if (existingSubscription != null) {
+                    // 이미 구독 정보가 있는 경우
+                    if (!existingSubscription.getConfirm()) {
+                        // confirm이 0인 경우에만 업데이트
+                        existingSubscription.setConfirm(true);
+                        subscribeService.saveSubscription(existingSubscription);
+                    }
+                } else {
+                    // 구독 정보가 없는 경우 새로 생성
+                    SubscribeEntity subscribeEntity = SubscribeEntity.builder()
+                            .confirm(true)
+                            .endDate(LocalDateTime.now().plusMonths(1))
+                            .startDate(LocalDateTime.now())
+                            .member(member)
+                            .build();
+                    subscribeService.saveSubscription(subscribeEntity);
+                }
+
+                return ResponseEntity.ok("구독이 성공적으로 처리되었습니다.");
+            } else {
+                return ResponseEntity.badRequest().body("구독 정보 저장에 실패했습니다.");
+            }
+        }
+        return ResponseEntity.badRequest().body("회원 정보를 찾을 수 없습니다.");
+    }
+
+
+
+    private String verifyAndExtractMemberId(String token) {
+        try {
+            // Bearer 키워드 제거
+            String jwtToken = token.replace("Bearer ", "");
+
+            // 토큰 검증
+            Claims claims = Jwts.parser()
+                    .setSigningKey(keyBytes) // 토큰 검증에 사용되는 키
+                    .parseClaimsJws(jwtToken)
+                    .getBody();
+
+            // 회원 ID 추출
+            String memberId = claims.getSubject();
+
+            return memberId;
+        } catch (Exception e) {
+            System.out.println("JWT verification failed: " + e.getMessage());
+            return null;
         }
     }
 }

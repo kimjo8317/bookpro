@@ -73,5 +73,14 @@ public class UserService {
         // 예를 들어, BCrypt 알고리즘 등을 사용하여 비밀번호를 해싱할 수 있습니다.
         return BCrypt.hashpw(pw, BCrypt.gensalt());
     }
+    public MemberEntity updateUser(MemberEntity member) {
+        // 입력값의 유효성 검사
+        if (!isValidUser(member)) {
+            throw new IllegalArgumentException("Invalid member information.");
+        }
+
+        // 회원 업데이트
+        return userRepository.save(member);
+    }
 
 }

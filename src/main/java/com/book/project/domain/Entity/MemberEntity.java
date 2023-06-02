@@ -31,5 +31,5 @@ public class MemberEntity  {
     private String pw;
 
     @Column(name="confirm")
-    private Integer confirm;
+    private Boolean confirm;
 }

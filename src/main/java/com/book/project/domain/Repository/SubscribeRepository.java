@@ -12,6 +12,5 @@ import java.util.List;
 public interface SubscribeRepository extends JpaRepository<SubscribeEntity, Long> {
     List<SubscribeEntity> findByEndDateLessThanEqual(LocalDateTime currentDate);
     SubscribeEntity findByMemberIdx(Long memberId);
-
     SubscribeEntity save(SubscribeEntity subscribeEntity);
 }

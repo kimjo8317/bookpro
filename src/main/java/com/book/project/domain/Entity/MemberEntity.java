@@ -21,7 +21,7 @@ public class MemberEntity  {
     @Column(name="id")
     private String id;
 
-    @Column(name="likeIdx")
+    @Column(name="like_Idx")
     private Integer likeIdx;
 
     @Column(name="name")
@@ -32,4 +32,11 @@ public class MemberEntity  {
 
     @Column(name="confirm")
     private Boolean confirm;
+
+    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL)
+    private SubscribeEntity subscribe;
+
+    public boolean isConfirm() {
+        return Boolean.TRUE.equals(confirm);
+    }
 }

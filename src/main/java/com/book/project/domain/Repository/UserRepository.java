@@ -12,4 +12,6 @@ public interface UserRepository extends JpaRepository<MemberEntity, Integer> {
     MemberEntity save(MemberEntity member);
     MemberEntity findById(String id);
     boolean existsById(String id);
+    void deleteById(String id);
+
 }

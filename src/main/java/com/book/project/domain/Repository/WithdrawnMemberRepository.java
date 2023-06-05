@@ -13,6 +13,6 @@ public interface WithdrawnMemberRepository extends JpaRepository<WithdrawnMember
 
     List<WithdrawnMember> findByWithdrawnDateBeforeOrWithdrawnDateEquals(LocalDateTime currentDate, LocalDateTime currentDate2);
 
-
+    WithdrawnMember findById(String id);
     void deleteById(String withdrawnMember);
 }

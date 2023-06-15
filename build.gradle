@@ -43,6 +43,9 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 	implementation 'org.hibernate:hibernate-core:6.2.0.CR3'
 
+	//JSON 파싱 라이브러리(DTO에 데이터를 매핑하기 위한)
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.4'
+
 
 
 }

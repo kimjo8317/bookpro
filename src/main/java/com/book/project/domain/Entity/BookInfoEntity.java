@@ -1,11 +1,10 @@
 package com.book.project.domain.Entity;
-
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @Getter
@@ -15,28 +14,44 @@ import java.time.LocalDate;
 public class BookInfoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="idx",nullable = false)
+    @Column(name = "idx", nullable = false)
     private int idx;
 
-    @Column(name="title",nullable = false)
+    @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name="writer",nullable = false)
-    private String writer;
+    @Column(name = "authors", columnDefinition = "JSON")
+    private String authors;
 
-    @Column(name="genre",nullable = false)
-    private String genre;
+    @Column(name = "contents", columnDefinition = "TEXT")
+    private String contents;
 
-    @Column(name="publisher" , nullable = false)
+    @Column(name = "datetime")
+    private LocalDateTime datetime;
+
+    @Column(name = "isbn", length = 255)
+    private String isbn;
+
+    @Column(name = "price")
+    private Integer price;
+
+    @Column(name = "publisher", length = 255)
     private String publisher;
 
-    @Column(name = "publication_date", nullable = false)
-    private LocalDate publicationDate;
+    @Column(name = "sale_price")
+    private Integer salePrice;
 
-    @Column(nullable = false, columnDefinition = "LONGTEXT")
-    private String poster;
+    @Column(name = "status", length = 255)
+    private String status;
 
-    @Column(nullable = false, columnDefinition = "LONGTEXT")
-    private String summary;
+    @Column(name = "thumbnail", length = 255)
+    private String thumbnail;
 
+    @Column(name = "translators", columnDefinition = "JSON")
+    private String translators;
+
+    @Column(name = "url", length = 255)
+    private String url;
+
+    // Add getters and setters, constructors, and other necessary methods
 }

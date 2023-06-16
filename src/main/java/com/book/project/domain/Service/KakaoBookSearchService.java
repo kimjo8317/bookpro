@@ -22,6 +22,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
 
 @Component
 @Service
@@ -38,7 +40,7 @@ public class KakaoBookSearchService {
 
             String url = "https://dapi.kakao.com/v3/search/book";
             String target = "title";
-            String query = "영화";
+            String query = "로맨스";
             String authorization = "KakaoAK " + "91b01b93a0adaba89cc63cf99c22f3a4";
             String encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8);
 
@@ -50,7 +52,7 @@ public class KakaoBookSearchService {
             headers.set("Authorization", authorization);
 
             // HTTP GET 요청 생성 (쿼리 파라미터 추가)
-            URI uri = new URI(url + "?target=" + target + "&query=" + encodedQuery + size );
+            URI uri = new URI(url + "?target=" + target + "&query=" + encodedQuery + "&size=" + 50);
             RequestEntity<Void> requestEntity = new RequestEntity<>(headers, HttpMethod.GET, uri);
 
             // HTTP 요청을 보내고 응답을 받음
@@ -72,32 +74,32 @@ public class KakaoBookSearchService {
 
                 //받아온 내용 안에 documents 가 리스트 형식이므로 여러개니까 for문을 사용해서 매번 builder 과정을 거치게함
                 for(DocumentsDTO item : bookInfoDTO.getDocuments()){
+
+                    String authors = String.join(",", Arrays.asList(item.getAuthors()));
+
                     //데이터가 20개인 경우 1번부터 20번까지 for문을 돌면서 bookInfo (Entity)에 빌더를 이용해서 데이터를 만들어줌
                     BookInfoEntity bookInfo = BookInfoEntity.builder()
-                            .price(item.getPrice())
-
-                            .isbn(item.getIsbn())
-                            .datetime(String.valueOf(item.getDatetime()))
-                            .title(item.getTitle())
                             .url(item.getUrl())
-                            .contents(item.getContents()).build();
+                            .title(item.getTitle())
+                            .thumbnail(item.getThumbnail())
+                            .status(item.getStatus())
+                            .salePrice(item.getSalePrice())
+                            .publisher(item.getPublisher())
+                            .price(item.getPrice())
+                            .isbn(item.getIsbn())
+                            .datetime(item.getDatetime())
+                            .contents(item.getContents())
+                            .authors(authors)
+                            .build();
 
                     //가공된 데이터를 저장함. for 1번인 경우 1번 데이터 저장하고 2번~~~ 20번 반복하므로 20개가 저장됨
-                    bookInfoRepository.save(bookInfo);
+//                    bookInfoRepository.save(bookInfo); //주석처리시 db에 저장X
                 }
-                
 
-
-
-
-                // BookInfoEntity 저장
-                //bookInfoRepository.save(bookInfo);
-
-                // 필요한 작업을 수행하도록 bookInfoDTO 객체를 처리합니다.
             } catch (IOException e) {
-                // 예외 처리
                 System.out.println("Error reading JSON: " + e.getMessage());
             }
         }
+
 
 }

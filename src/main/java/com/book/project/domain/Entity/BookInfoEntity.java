@@ -1,13 +1,10 @@
 package com.book.project.domain.Entity;
-import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @Getter
@@ -23,7 +20,7 @@ public class BookInfoEntity {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "authors", columnDefinition = "JSON")
+    @Column(name = "authors", columnDefinition = "TEXT")
     private String authors;
 
     @Column(name = "contents", columnDefinition = "TEXT")
@@ -51,13 +48,13 @@ public class BookInfoEntity {
     private String thumbnail;
 
     @Column(name = "translators", columnDefinition = "JSON")
-    private String translators;
+    private String[] translators;
 
     @Column(name = "url", length = 255)
     private String url;
 
     @Builder
-    public BookInfoEntity(int idx, String title, String authors, String contents, String datetime, String isbn, Integer price, String publisher, Integer salePrice, String status, String thumbnail, String translators, String url) {
+    public BookInfoEntity(int idx, String title, String authors, String contents, String datetime, String isbn, Integer price, String publisher, Integer salePrice, String status, String thumbnail, String[] translators, String url) {
         this.idx = idx;
         this.title = title;
         this.authors = authors;
@@ -72,5 +69,6 @@ public class BookInfoEntity {
         this.translators = translators;
         this.url = url;
     }
-// Add getters and setters, constructors, and other necessary methods
+
+    // Add getters and setters, constructors, and other necessary methods
 }

@@ -1,12 +1,7 @@
 package com.book.project.domain.DTO;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -23,10 +18,10 @@ public class DocumentsDTO {
     private String isbn;
     private String datetime;
     private String contents;
-    private List<String> authors;
+    private String[] authors;
 
     @Builder
-    public DocumentsDTO(String url, List<String> translators, String title, String thumbnail, String status, int salePrice, String publisher, int price, String isbn, String datetime, String contents, List<String> authors) {
+    public DocumentsDTO(String url, List<String> translators, String title, String thumbnail, String status, int salePrice, String publisher, int price, String isbn, String datetime, String contents, String[] authors) {
         this.url = url;
         this.translators = translators;
         this.title = title;
@@ -40,7 +35,6 @@ public class DocumentsDTO {
         this.contents = contents;
         this.authors = authors;
     }
-
     public DocumentsDTO(){
 
     }

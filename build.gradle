@@ -46,6 +46,10 @@ dependencies {
 	//JSON 파싱 라이브러리(DTO에 데이터를 매핑하기 위한)
 	implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.4'
 
+	//데이트타임
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
+
 
 
 }

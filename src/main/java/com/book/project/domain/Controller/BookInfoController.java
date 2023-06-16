@@ -19,6 +19,7 @@ public class BookInfoController {
         this.bookInfoRepository = bookInfoRepository;
     }
 
+    //db에 담긴 책정보 조회
     @GetMapping("/books")
     public List<BookInfoEntity> getAllBooks() {
         return bookInfoRepository.findAll();

@@ -39,4 +39,12 @@ public class MemberEntity  {
     public boolean isConfirm() {
         return Boolean.TRUE.equals(confirm);
     }
+
+    //구독정보가 존재하지 않아도 콘솔에 노출
+    public SubscribeEntity getSubscribe() {
+        if (this.subscribe == null) {
+            return SubscribeEntity.builder().build();
+        }
+        return this.subscribe;
+    }
 }

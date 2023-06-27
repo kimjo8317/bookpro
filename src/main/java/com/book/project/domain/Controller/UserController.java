@@ -8,6 +8,7 @@ import com.book.project.domain.Repository.WithdrawnMemberRepository;
 import com.book.project.domain.Service.SubscribeService;
 import com.book.project.domain.Service.UserService;
 import com.book.project.domain.Service.WithdrawnMemberService;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import io.jsonwebtoken.Jws;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 @RestController
@@ -66,29 +68,52 @@ public class UserController {
                 // 구독 여부 확인
                 boolean isSubscribed = checkSubscription(loginRequest.getId());
 
-                // JWT 디버깅
-                debugJwtToken(token);
-                debugEncodeJwtToken(token);
+                // 회원 정보 조회
+                MemberEntity member = userService.getUserById(loginRequest.getId());
 
-                ObjectMapper objectMapper = new ObjectMapper();
-                String responseJson = objectMapper.createObjectNode()
-                        .put("token", token)
-                        .put("message", "Login successful")
-                        .put("subscribe", isSubscribed)
-                        .toString();
+                if (member != null) {
+                    // 회원 정보를 포함한 응답 생성
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    ObjectNode responseNode = objectMapper.createObjectNode();
+                    responseNode.put("token", token);
+                    responseNode.put("message", "로그인 성공");
+                    responseNode.put("subscribe", isSubscribed);
+                    responseNode.put("confirm", member.isConfirm());
+                    responseNode.put("name", member.getName());
 
-                return ResponseEntity.ok()
-                        .header("Content-Type", "application/json")
-                        .body(responseJson);
+                    SubscribeEntity subscribe = member.getSubscribe();
+                    if (subscribe != null) {
+                        LocalDateTime startDate = subscribe.getStartDate();
+                        LocalDateTime endDate = subscribe.getEndDate();
+                        responseNode.put("startDate", startDate != null ? startDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) : "N/A");
+                        responseNode.put("endDate", endDate != null ? endDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) : "N/A");
+                    } else {
+                        responseNode.put("startDate", "N/A");
+                        responseNode.put("endDate", "N/A");
+                    }
+
+                    String responseJson = responseNode.toString();
+
+                    return ResponseEntity.ok()
+                            .header("Content-Type", "application/json")
+                            .body(responseJson);
+                } else {
+                    return ResponseEntity.badRequest().body("회원 정보를 찾을 수 없습니다.");
+                }
             } else {
                 // 인증 실패
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication failed");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("인증 실패");
             }
         } catch (IllegalArgumentException e) {
             // 예외 처리
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+
+
+
+
 
 
     private String generateJwtToken(String userId) {

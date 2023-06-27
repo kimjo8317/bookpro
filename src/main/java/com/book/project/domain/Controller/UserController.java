@@ -46,6 +46,45 @@ public class UserController {
     private WithdrawnMemberRepository withdrawnMemberRepository;
 
 
+    //회원정보 조회 API
+    @GetMapping("/member/{id}")
+    public ResponseEntity<?> getMemberInfo(@PathVariable("id") String memberId) {
+        try {
+            MemberEntity member = userService.getUserById(memberId);
+
+            if (member != null) {
+                // 회원 정보를 포함한 응답 생성
+                ObjectMapper objectMapper = new ObjectMapper();
+                ObjectNode responseNode = objectMapper.createObjectNode();
+                responseNode.put("id", member.getId());
+                responseNode.put("name", member.getName());
+                responseNode.put("subscribe", member.getSubscribe() != null);
+
+                SubscribeEntity subscribe = member.getSubscribe();
+                if (subscribe != null) {
+                    LocalDateTime startDate = subscribe.getStartDate();
+                    LocalDateTime endDate = subscribe.getEndDate();
+                    responseNode.put("startDate", startDate != null ? startDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) : "N/A");
+                    responseNode.put("endDate", endDate != null ? endDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) : "N/A");
+                } else {
+                    responseNode.put("startDate", "N/A");
+                    responseNode.put("endDate", "N/A");
+                }
+
+                String responseJson = responseNode.toString();
+
+                return ResponseEntity.ok()
+                        .header("Content-Type", "application/json")
+                        .body(responseJson);
+            } else {
+                return ResponseEntity.badRequest().body("회원 정보를 찾을 수 없습니다.");
+            }
+        } catch (Exception e) {
+            // 예외 처리
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류");
+        }
+    }
+
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest, HttpSession session) {
         try {

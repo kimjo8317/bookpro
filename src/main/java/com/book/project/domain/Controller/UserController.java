@@ -116,9 +116,10 @@ public class UserController {
                     ObjectNode responseNode = objectMapper.createObjectNode();
                     responseNode.put("token", token);
                     responseNode.put("message", "로그인 성공");
+                    responseNode.put("id", member.getId());
+                    responseNode.put("name", member.getName());
                     responseNode.put("subscribe", isSubscribed);
                     responseNode.put("confirm", member.isConfirm());
-                    responseNode.put("name", member.getName());
 
                     SubscribeEntity subscribe = member.getSubscribe();
                     if (subscribe != null) {

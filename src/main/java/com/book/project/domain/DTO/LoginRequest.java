@@ -1,7 +1,4 @@
 package com.book.project.domain.DTO;
-
-import com.book.project.domain.Entity.MemberEntity;
-
 public class LoginRequest {
     private String id;
     private String pw;

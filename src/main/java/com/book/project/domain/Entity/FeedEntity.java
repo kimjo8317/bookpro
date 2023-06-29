@@ -1,12 +1,10 @@
 package com.book.project.domain.Entity;
-
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
 
 @Entity
 @Table(name = "feed")
@@ -15,7 +13,7 @@ import java.util.List;
 public class FeedEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="idx",nullable = false)
+    @Column(name = "idx", nullable = false)
     private Long idx;
 
     @Column(name = "content", length = 255)
@@ -24,21 +22,13 @@ public class FeedEntity {
     @Column(name = "create_date")
     private LocalDateTime createDate;
 
-    @Column(name = "likes")
-    private Integer likes;
-
-    @Column(name = "title", length = 255)
-    private String title;
-
-    @Column(name = "views")
-    private Integer views;
-
     @Column(name = "writer", length = 255)
     private String writer;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "bookinfo_idx")
-    private List<BookInfoEntity> bookInfoEntity;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "bookinfo_idx", referencedColumnName = "idx")
+    private BookInfoEntity bookInfoEntity;
 
-
+    @OneToMany(mappedBy = "feedEntity", cascade = CascadeType.ALL)
+    private List<LikeEntity> likes;
 }

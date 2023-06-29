@@ -1,7 +1,6 @@
 
 server:
   address: 192.168.0.66
-#  address: 0.0.0.0
   port: 8089
 
 spring:
@@ -13,9 +12,14 @@ spring:
     defer-datasource-initialization: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3305/book
-    username: root
-    password: 1234
+    url: jdbc:mysql://iotsam.com:3306/book
+    username: book
+    password: book
+#로컬접속
+#    url: jdbc:mysql://localhost.com:3305/book
+#    username: root
+#    password: 1234
+
 
 #H2db??
 #spring:

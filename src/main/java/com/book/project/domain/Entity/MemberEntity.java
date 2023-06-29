@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Setter
@@ -21,7 +24,7 @@ public class MemberEntity  {
     @Column(name="id")
     private String id;
 
-    @Column(name="like_Idx")
+    @Column(name="like_table_Idx")
     private Integer likeIdx;
 
     @Column(name="name")
@@ -36,6 +39,9 @@ public class MemberEntity  {
     @OneToOne(mappedBy = "member", cascade = CascadeType.ALL)
     private SubscribeEntity subscribe;
 
+    @OneToMany(mappedBy = "memberEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<LikeEntity> likes = new ArrayList<>();
+
     public boolean isConfirm() {
         return Boolean.TRUE.equals(confirm);
     }
@@ -46,5 +52,14 @@ public class MemberEntity  {
             return SubscribeEntity.builder().build();
         }
         return this.subscribe;
+    }
+    public void addLike(LikeEntity like) {
+        likes.add(like);
+        like.setMemberEntity(this);
+    }
+
+    public void removeLike(LikeEntity like) {
+        likes.remove(like);
+        like.setMemberEntity(null);
     }
 }

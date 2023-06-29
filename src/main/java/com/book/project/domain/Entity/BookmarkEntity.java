@@ -13,7 +13,7 @@ public class BookmarkEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="idx",nullable = false)
-    private Long idx;
+    private int idx;
 
     @Column(name = "bookinfo")
     private Integer bookinfo;

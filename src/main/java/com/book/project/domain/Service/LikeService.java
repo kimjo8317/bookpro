@@ -32,9 +32,17 @@ public class LikeService {
         FeedEntity feedEntity = feedRepository.findById(feedId)
                 .orElseThrow(() -> new RuntimeException("Feed not found"));
 
-        LikeEntity likeEntity = LikeEntity.toLikeEntity(memberEntity, feedEntity);
-        likeRepository.save(likeEntity);
+        LikeEntity existingLike = likeRepository.findFirstByMemberEntityAndFeedEntity(memberEntity, feedEntity);
 
-        feedEntity.getLikes().add(likeEntity); // 추가된 코드: 좋아요를 피드에 추가
+        if (existingLike != null) {
+            // 이미 좋아요한 경우 좋아요 제거
+            likeRepository.delete(existingLike);
+            feedEntity.getLikes().remove(existingLike);
+        } else {
+            // 좋아요 추가
+            LikeEntity likeEntity = LikeEntity.toLikeEntity(memberEntity, feedEntity);
+            likeRepository.save(likeEntity);
+            feedEntity.getLikes().add(likeEntity);
+        }
     }
 }

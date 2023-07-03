@@ -32,8 +32,10 @@ public class FeedService {
             feedDTO.setCreateDate(feedEntity.getCreateDate());
             feedDTO.setWriter(feedEntity.getWriter());
             feedDTO.setBookinfoIdx(feedEntity.getBookInfoEntity().getIdx());
+            feedDTO.setPoster(feedEntity.getBookInfoEntity().getPoster());
             feedDTOs.add(feedDTO);
         }
         return feedDTOs;
     }
 }
+

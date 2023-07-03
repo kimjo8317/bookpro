@@ -1,7 +1,6 @@
 package com.book.project.domain.Controller;
 
 import com.book.project.domain.DTO.FeedDTO;
-import com.book.project.domain.Entity.FeedEntity;
 import com.book.project.domain.Service.FeedService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

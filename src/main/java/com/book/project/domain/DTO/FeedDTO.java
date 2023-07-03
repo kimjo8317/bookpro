@@ -13,8 +13,9 @@ public class FeedDTO {
     private LocalDateTime createDate;
     private String writer;
     private Long bookinfoIdx;
+    private String poster;
 
-    // Constructors, getters, and setters
+
 
     public Long getIdx() {
         return idx;

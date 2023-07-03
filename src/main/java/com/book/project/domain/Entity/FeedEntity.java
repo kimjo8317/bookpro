@@ -31,4 +31,5 @@ public class FeedEntity {
 
     @OneToMany(mappedBy = "feedEntity", cascade = CascadeType.ALL)
     private List<LikeEntity> likes;
+
 }

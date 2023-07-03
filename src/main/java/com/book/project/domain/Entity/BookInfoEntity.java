@@ -40,8 +40,9 @@ public class BookInfoEntity {
     private String writer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "bookinfo_idx") // 수정된 부분
+    @JoinColumn(name = "feed_idx", referencedColumnName = "idx")
     private FeedEntity feed;
+
 
     // Constructor
     public BookInfoEntity() {
